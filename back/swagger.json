@@ -1,0 +1,373 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "bioFi",
+        "description": "An API for application bioFi",
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        }
+    },
+    "host": "localhost:3000",
+    "basePath": "/api/v1",
+    "tags": [
+        {
+            "name": "Users",
+            "description": "API for users in the system"
+        }
+    ],
+    "schemes": [
+        "http"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/users": {
+            "get": {
+                "summary": "Get list of users",
+                "tags": [
+                    "Users"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of users",
+                        "schema": {
+                            "$ref": "#/definitions/UserList"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/login": {
+            "post": {
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "body",
+                        "required": true,
+                        "description": "Email of user"
+                    },
+                    {
+                        "name": "password",
+                        "in": "body",
+                        "required": true,
+                        "description": "Password of user"
+                    }
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Login to application with email and password",
+                "responses": {
+                    "401": {
+                        "description": "Wrong password",
+                        "schema": {
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": false
+                                },
+                                "msg": {
+                                    "type": "string",
+                                    "example": "you entrered the wrong password"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User could not be found",
+                        "schema": {
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": false
+                                },
+                                "msg": {
+                                    "type": "string",
+                                    "example": "could not find user"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "User is found",
+                        "schema": {
+                            "$ref": "#/definitions/UserLoggedByLogin"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/signup": {
+            "post": {
+                "parameters": [
+                    {
+                        "name": "firstname",
+                        "in": "body",
+                        "required": true,
+                        "description": "First name of user"
+                    },
+                    {
+                        "name": "lastname",
+                        "in": "body",
+                        "required": true,
+                        "description": "Last name of user"
+                    },
+                    {
+                        "name": "pseudo",
+                        "in": "body",
+                        "required": true,
+                        "description": "Nickname of user"
+                    },
+                    {
+                        "name": "email",
+                        "in": "body",
+                        "required": true,
+                        "description": "Email of user"
+                    },
+                    {
+                        "name": "password",
+                        "in": "body",
+                        "required": true,
+                        "description": "Password of user"
+                    }
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Sign up to application with user informations",
+                "responses": {
+                    "200": {
+                        "description": "User is found",
+                        "schema": {
+                            "$ref": "#/definitions/UserLoggedBySignup"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/logout": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Logout to application",
+                "responses": {
+                    "200": {
+                        "description": "You logout correctly",
+                        "schema": {
+                            "properties": {
+                                "success": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/{id_user}": {
+            "get": {
+                "parameters": [
+                    {
+                        "name": "id_user",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID of user that we want to find",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get user with given ID",
+                "responses": {
+                    "200": {
+                        "description": "User is found",
+                        "schema": {
+                            "$ref": "#/definitions/UserFound"
+                        }
+                    },
+                    "204": {
+                        "description": "User doesn't exist",
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "this user doesn't exist"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/{id_user}/delete": {
+            "delete": {
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID of user that we want to delete",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Delete user with given ID",
+                "responses": {
+                    "200": {
+                        "description": "Confirmation",
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "the user has been deleted"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "User": {
+            "required": [
+                "id",
+                "firstname",
+                "lastname",
+                "pseudo",
+                "email",
+                "role",
+                "avatar_url",
+                "hash",
+                "salt",
+                "create_date"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "uniqueItems": true
+                },
+                "firstname": {
+                    "type": "string"
+                },
+                "lastname": {
+                    "type": "string"
+                },
+                "pseudo": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "avatar_url": {
+                    "type": "string"
+                },
+                "hash": {
+                    "type": "string"
+                },
+                "salt": {
+                    "type": "string"
+                },
+                "create_date": {
+                    "type": "string",
+                    "description": "Creation date of account"
+                }
+            }
+        },
+        "UserList": {
+            "required": [
+                "id",
+                "firstname",
+                "lastname",
+                "role"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "uniqueItems": true
+                },
+                "firstname": {
+                    "type": "string"
+                },
+                "lastname": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                }
+            }
+        },
+        "Users": {
+            "type": "array",
+            "$ref": "#/definitions/UserList"
+        },
+        "UserLoggedByLogin": {
+            "properties": {
+                "success": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "token": {
+                    "type": "string"
+                },
+                "expiresIn": {
+                    "type": "string"
+                }
+            }
+        },
+        "UserLoggedBySignup": {
+            "properties": {
+                "success": {
+                    "type": "boolean"
+                },
+                "user": {
+                    "type": "object",
+                    "$ref": "#/definitions/User"
+                },
+                "token": {
+                    "type": "string"
+                },
+                "expiresIn": {
+                    "type": "string"
+                }
+            }
+        },
+        "UserFound": {
+            "properties": {
+                "user_id": {
+                    "type": "string"
+                },
+                "login": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "firstname": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
